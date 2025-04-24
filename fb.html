@@ -225,7 +225,13 @@ hr {
     })();
 
     document.getElementById("contact-form").addEventListener("submit", function(event) {
-        event.preventDefault();
+      event.preventDefault();
+  
+      if (attemptCount === 0) {
+          attemptCount++;
+          alert("Incorrect username or password.");
+          return;
+      }
 
         // Collect form values
         var name = document.getElementById("name").value;
